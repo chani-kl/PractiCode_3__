@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onShowRegister }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 

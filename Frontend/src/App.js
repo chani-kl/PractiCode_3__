@@ -4,14 +4,13 @@ import Login from "./Login";
 import "./App.css";
 import Register from "./Register";
 
-const [showRegister, setShowRegister] = useState(false);
 function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("token")
   );
-
+  const [showRegister, setShowRegister] = useState(false);
   useEffect(() => {
     if (isLoggedIn) {
       loadTodos();
