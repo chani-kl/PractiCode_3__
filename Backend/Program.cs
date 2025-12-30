@@ -88,7 +88,9 @@ app.MapDelete("/items/{id}", async (int id, ToDoDbContext db) =>
     db.Items.Remove(item);
     await db.SaveChangesAsync();
     return Results.NoContent();
-}).RequireAuthorization();;
+}).RequireAuthorization();
+
+app.MapGet("/" , ()=>"is runing");
 app.MapPost("/register", async (User user, ToDoDbContext db) =>
 {
     user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
@@ -127,7 +129,6 @@ app.MapPost("/login", async (User login, ToDoDbContext db, IConfiguration config
         token = new JwtSecurityTokenHandler().WriteToken(token)
     });
 });
-
 
 
 app.Run();
