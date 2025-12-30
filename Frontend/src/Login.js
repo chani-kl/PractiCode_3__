@@ -5,6 +5,10 @@ function Login({ onLogin }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
+  <button type="button" onClick={onShowRegister}>
+  להרשמה
+</button>
+
   async function handleLogin(e) {
     e.preventDefault();
 
@@ -14,10 +18,8 @@ function Login({ onLogin }) {
         passwordHash: password
       });
 
-      // 🔥 זה השורה הכי חשובה
       localStorage.setItem("token", res.data.token);
-
-      onLogin(); // מעבר ל-Todo
+      onLogin(); 
     } catch {
       alert("שם משתמש או סיסמה שגויים");
     }

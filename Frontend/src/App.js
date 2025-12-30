@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import todoService from "./todoService";
 import Login from "./Login";
 import "./App.css";
+import Register from "./Register";
 
+const [showRegister, setShowRegister] = useState(false);
 function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
@@ -41,8 +43,15 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    return <Login onLogin={() => setIsLoggedIn(true)} />;
-  }
+  return showRegister ? (
+    <Register onRegister={() => setShowRegister(false)} />
+  ) : (
+    <Login
+      onLogin={() => setIsLoggedIn(true)}
+      onShowRegister={() => setShowRegister(true)}
+    />
+  );
+}
 
   return (
     <div className="todo-container">
