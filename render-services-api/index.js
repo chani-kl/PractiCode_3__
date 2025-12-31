@@ -1,69 +1,17 @@
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS – חובה
-app.use(cors({
-  origin: "https://frontend-40od.onrender.com",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+// ✅ לפתוח CORS לכולם (מהיר, לא יפה – אבל עובד)
+app.use(cors());
 app.use(express.json());
 
-// ====== FAKE DB ======
+// ===== USERS (זמני) =====
 const users = [];
 
-// ====== TEST ROUTE ======
-app.get("/", (req, res) => {
-  res.send("Backend is running");
-});
-
-// ====== RENDER API ======
-app.get("/services", async (req, res) => {
-  try {
-    const response = await axios.get(
-      "https://api.render.com/v1/services",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.RENDER_API_KEY}`,
-        },
-      }
-    );
-
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ====== REGISTER ======
-app.post("/register", (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Missing fields" });
-  }
-
-  const exists = users.find(u => u.username === username);
-  if (exists) {
-    return res.status(400).json({ message: "User already exists" });
-  }
-
-  users.push({
-    id: Date.now(),
-    username,
-    password
-  });
-
-  res.json({ message: "Registered successfully" });
-});
-
-// ====== LOGIN ======
+// ===== LOGIN =====
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -75,9 +23,22 @@ app.post("/login", (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  res.json({ token: "fake-jwt-token" });
+  res.json({ token: "123" });
+});
+
+// ===== REGISTER =====
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+
+  users.push({ username, password });
+  res.json({ message: "ok" });
+});
+
+// ===== TEST =====
+app.get("/", (req, res) => {
+  res.send("OK");
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running");
 });
