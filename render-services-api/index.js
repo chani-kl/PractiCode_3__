@@ -1,18 +1,29 @@
 const express = require("express");
 const axios = require("axios");
-const cors = require("cors");   // ⭐ הוספה
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ⭐ middleware
-app.use(cors());               // ⭐ זה פותר את השגיאה
+// ✅ CORS – חובה
+app.use(cors({
+  origin: "https://frontend-40od.onrender.com",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
+// ====== FAKE DB ======
 const users = [];
 
-// ---------- Render services ----------
+// ====== TEST ROUTE ======
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
+
+// ====== RENDER API ======
 app.get("/services", async (req, res) => {
   try {
     const response = await axios.get(
@@ -30,7 +41,7 @@ app.get("/services", async (req, res) => {
   }
 });
 
-// ---------- Register ----------
+// ====== REGISTER ======
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
 
@@ -43,18 +54,16 @@ app.post("/register", (req, res) => {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  const user = {
+  users.push({
     id: Date.now(),
     username,
     password
-  };
+  });
 
-  users.push(user);
-
-  res.json({ message: "User registered successfully" });
+  res.json({ message: "Registered successfully" });
 });
 
-// ---------- Login (כדי שלא ייפול) ----------
+// ====== LOGIN ======
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -66,10 +75,9 @@ app.post("/login", (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  res.json({ token: "fake-token" });
+  res.json({ token: "fake-jwt-token" });
 });
 
-// ---------- Server ----------
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
