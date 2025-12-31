@@ -1,6 +1,6 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f8f9fa;
+  background: #f0f4f8;
   margin: 0;
   height: 100vh;
   display: flex;
@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-  background: #ffffff;
+  background: #fff;
   padding: 35px 45px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -29,7 +29,6 @@ input {
   border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 14px;
-  box-sizing: border-box;
 }
 
 button {
@@ -82,17 +81,4 @@ li span {
 .completed {
   text-decoration: line-through;
   color: gray;
-}
-
-.delete-btn {
-  background-color: #e74c3c;
-  border: none;
-  border-radius: 8px;
-  padding: 4px 8px;
-  color: white;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background-color: #c0392b;
 }

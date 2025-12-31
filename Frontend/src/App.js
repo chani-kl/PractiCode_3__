@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Register from "./Register";
 import "./App.css";
@@ -9,25 +9,54 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
+  const API_URL = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
-    if (isLoggedIn) {
-      // כאן תטען את ה-Todos מה-API שלך
-      setTodos([]);
-    }
+    if (isLoggedIn) loadTodos();
   }, [isLoggedIn]);
 
-  const addTodo = (e) => {
+  const loadTodos = async () => {
+    const res = await fetch(`${API_URL}/todos`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const data = await res.json();
+    setTodos(data);
+  };
+
+  const addTodo = async (e) => {
     e.preventDefault();
     if (!newTodo) return;
-    setTodos([...todos, { id: Date.now(), name: newTodo, isComplete: false }]);
+    const res = await fetch(`${API_URL}/todos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ name: newTodo }),
+    });
+    const todo = await res.json();
+    setTodos([...todos, todo]);
     setNewTodo("");
   };
 
-  const toggleTodo = (todo) => {
-    setTodos(todos.map(t => t.id === todo.id ? {...t, isComplete: !t.isComplete} : t));
+  const toggleTodo = async (todo) => {
+    const res = await fetch(`${API_URL}/todos/${todo.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ isComplete: !todo.isComplete }),
+    });
+    const updated = await res.json();
+    setTodos(todos.map(t => t.id === updated.id ? updated : t));
   };
 
-  const deleteTodo = (id) => {
+  const deleteTodo = async (id) => {
+    await fetch(`${API_URL}/todos/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
     setTodos(todos.filter(t => t.id !== id));
   };
 
@@ -35,10 +64,7 @@ function App() {
     return showRegister ? (
       <Register onRegister={() => setShowRegister(false)} />
     ) : (
-      <Login 
-        onLogin={() => setIsLoggedIn(true)} 
-        onShowRegister={() => setShowRegister(true)} 
-      />
+      <Login onLogin={() => setIsLoggedIn(true)} onShowRegister={() => setShowRegister(true)} />
     );
   }
 
@@ -46,10 +72,10 @@ function App() {
     <div className="container">
       <h1>Todo List</h1>
       <form onSubmit={addTodo}>
-        <input 
-          placeholder="הקלידי משימה חדשה..." 
-          value={newTodo} 
-          onChange={e => setNewTodo(e.target.value)} 
+        <input
+          placeholder="הקלידי משימה חדשה..."
+          value={newTodo}
+          onChange={e => setNewTodo(e.target.value)}
         />
         <button type="submit">הוסף</button>
       </form>
