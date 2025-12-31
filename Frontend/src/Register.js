@@ -1,19 +1,24 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function Register({ onRegister }) {
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
 
-    await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/register`, {
+        userName,
+        password // אם ה־backend מצפה ל-passwordHash, תצטרך לחשב hash
+      });
 
-    onRegister(); 
+      alert("הרשמה בוצעה בהצלחה");
+      onRegister(); 
+    } catch (err) {
+      alert("שגיאה בהרשמה: " + err.response?.data?.message || err.message);
+    }
   };
 
   return (
@@ -22,8 +27,8 @@ function Register({ onRegister }) {
 
       <input
         placeholder="שם משתמש"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
+        value={userName}
+        onChange={e => setUserName(e.target.value)}
       />
 
       <input
@@ -33,7 +38,7 @@ function Register({ onRegister }) {
         onChange={e => setPassword(e.target.value)}
       />
 
-      <button>הרשמה</button>
+      <button type="submit">הרשמה</button>
     </form>
   );
 }
