@@ -1,4 +1,3 @@
-/* מרכז הכל */
 body {
   font-family: Arial, sans-serif;
   background: #f0f4f8;
@@ -10,53 +9,59 @@ body {
 }
 
 .container {
-  background: #ffffff;
-  padding: 40px 50px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  min-width: 320px;
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
   width: 350px;
   text-align: center;
 }
 
-h2 {
-  margin-bottom: 25px;
-  color: #333333;
+.form-container {
+  display: flex;
+  flex-direction: column;
 }
 
 input {
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  padding: 10px 12px;
+  margin: 8px 0;
   border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 14px;
-  box-sizing: border-box;
 }
 
 button {
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin: 8px 0;
   border: none;
   border-radius: 8px;
   background-color: #4a90e2;
-  color: white;
+  color: #fff;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
 button:hover {
   background-color: #357abd;
 }
 
-/* כפתור משני קטן */
-button[type="button"] {
-  background-color: #e0e0e0;
-  color: #333;
+.completed {
+  text-decoration: line-through;
+  color: gray;
 }
 
-button[type="button"]:hover {
-  background-color: #bdbdbd;
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+li span {
+  cursor: pointer;
 }

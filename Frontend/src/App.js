@@ -1,91 +1,63 @@
 import React, { useEffect, useState } from "react";
-import todoService from "./todoService";
 import Login from "./Login";
-import "./App.css";
 import Register from "./Register";
+import "./App.css";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [showRegister, setShowRegister] = useState(false);
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!localStorage.getItem("token")
-  );
-  const [showRegister, setShowRegister] = useState(false);
+
   useEffect(() => {
     if (isLoggedIn) {
-      loadTodos();
+      // כאן תטען את ה-Todos מה-API שלך
+      setTodos([]);
     }
   }, [isLoggedIn]);
 
-  const loadTodos = async () => {
-    const data = await todoService.getTasks();
-    setTodos(data);
-  };
-
-  const addTodo = async (e) => {
+  const addTodo = (e) => {
     e.preventDefault();
     if (!newTodo) return;
-
-    const task = await todoService.addTask(newTodo);
-    setTodos([...todos, task]);
+    setTodos([...todos, { id: Date.now(), name: newTodo, isComplete: false }]);
     setNewTodo("");
   };
 
-  const deleteTodo = async (id) => {
-    await todoService.deleteTask(id);
+  const toggleTodo = (todo) => {
+    setTodos(todos.map(t => t.id === todo.id ? {...t, isComplete: !t.isComplete} : t));
+  };
+
+  const deleteTodo = (id) => {
     setTodos(todos.filter(t => t.id !== id));
   };
 
-  const toggleTodo = async (todo) => {
-    const updated = await todoService.toggleComplete(todo);
-    setTodos(todos.map(t => t.id === updated.id ? updated : t));
-  };
-
   if (!isLoggedIn) {
-  return showRegister ? (
-    <Register onRegister={() => setShowRegister(false)} />
-  ) : (
-    <Login
-      onLogin={() => setIsLoggedIn(true)}
-      onShowRegister={() => setShowRegister(true)}
-    />
-  );
-}
+    return showRegister ? (
+      <Register onRegister={() => setShowRegister(false)} />
+    ) : (
+      <Login 
+        onLogin={() => setIsLoggedIn(true)} 
+        onShowRegister={() => setShowRegister(true)} 
+      />
+    );
+  }
 
   return (
-    <div className="todo-container">
+    <div className="container">
       <h1>Todo List</h1>
-
-      <form className="todo-form" onSubmit={addTodo}>
-        <input
-          value={newTodo}
-          onChange={e => setNewTodo(e.target.value)}
-          placeholder="הקלידי משימה חדשה..."
+      <form onSubmit={addTodo}>
+        <input 
+          placeholder="הקלידי משימה חדשה..." 
+          value={newTodo} 
+          onChange={e => setNewTodo(e.target.value)} 
         />
-        <button>הוסף</button>
+        <button type="submit">הוסף</button>
       </form>
-
-      <ul className="todo-list">
+      <ul>
         {todos.map(todo => (
-          <li
-            key={todo.id}
-            className={`todo-item ${todo.isComplete ? "completed" : ""}`}
-          >
-            <div className="todo-left">
-              <input
-                type="checkbox"
-                checked={todo.isComplete}
-                onChange={() => toggleTodo(todo)}
-              />
-              <span>{todo.name}</span>
-            </div>
-
-            <button
-              className="delete-btn"
-              onClick={() => deleteTodo(todo.id)}
-            >
-              ✖
-            </button>
+          <li key={todo.id} className={todo.isComplete ? "completed" : ""}>
+            <span onClick={() => toggleTodo(todo)}>{todo.name}</span>
+            <button onClick={() => deleteTodo(todo.id)}>✖</button>
           </li>
         ))}
       </ul>
