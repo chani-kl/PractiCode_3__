@@ -5,21 +5,17 @@ function Login({ onLogin, onShowRegister }) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  <button type="button" onClick={onShowRegister}>
-  להרשמה
-</button>
-
   async function handleLogin(e) {
     e.preventDefault();
 
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, {
         userName,
-        passwordHash: password
+        password // שים לב ששדה זה נקרא password ולא passwordHash
       });
 
       localStorage.setItem("token", res.data.token);
-      onLogin(); 
+      onLogin();
     } catch {
       alert("שם משתמש או סיסמה שגויים");
     }
@@ -43,6 +39,11 @@ function Login({ onLogin, onShowRegister }) {
       />
 
       <button type="submit">Login</button>
+
+      {/* כפתור הרשמה עכשיו בתוך ה-JSX */}
+      <button type="button" onClick={onShowRegister}>
+        להרשמה
+      </button>
     </form>
   );
 }
